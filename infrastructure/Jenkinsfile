@@ -6,7 +6,7 @@ pipeline {
   stages {
     stage('Build') {
         agent {
-            dockerfile {image 'klakegg/hugo:0.74.3-alpine'}
+            docker {image 'klakegg/hugo:0.74.3-alpine'}
         }
         steps {
             sh 'hugo'
