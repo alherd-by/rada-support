@@ -13,7 +13,7 @@ pipeline {
         }
         steps {
             sh 'hugo'
-            stash includes: 'public/*', name: 'output'
+            stash includes: 'public/**', name: 'output'
             stash includes: 'infrastructure/*', name: 'infra'
         }
     }
