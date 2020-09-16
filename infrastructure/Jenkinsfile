@@ -40,7 +40,9 @@ ${FRONTEND_HOST}
                    inventory: 'infrastructure/hosts',
                    credentialsId: 'SSH_KEY',
                    hostKeyChecking: false,
-                   extras: '-e username=' + $DEPLOY_USER
+                   extraVars: [
+                       login: 'DEPLOY_USER',
+                   ]
                )
             }
         }
