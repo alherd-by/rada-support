@@ -30,15 +30,12 @@ pipeline {
 ${FRONTEND_HOST}
             """
             withCredentials(
-                [
-                sshUserPrivateKey(credentialsId: "SSH_PRIVATE_KEY", keyFileVariable: 'SSH_KEY'),
-                string(credentialsId: 'DEPLOY_USER', variable: 'SSH_DEPLOY_USER')
-                ]
+                [sshUserPrivateKey(credentialsId: "SSH_PRIVATE_KEY", keyFileVariable: 'SSH_KEY')]
             ) {
                ansiblePlaybook(
                    playbook: 'infrastructure/ansistrano_deploy.yml',
                    inventory: 'infrastructure/hosts',
-                   credentialsId: 'SSH_KEY',
+                   credentialsId: "$SSH_KEY",
                    hostKeyChecking: false,
                    extraVars: [
                        login: "$SSH_DEPLOY_USER",
