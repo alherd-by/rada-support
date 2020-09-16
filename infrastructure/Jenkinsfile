@@ -17,7 +17,7 @@ pipeline {
             docker { image 'kissmy/ansistrano:latest'}
         }
         steps {
-            sh 'ls -l'
+            sh 'ls -lh'
         }
     }
   }
