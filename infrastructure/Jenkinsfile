@@ -28,12 +28,9 @@ pipeline {
             writeFile file: 'infrastructure/hosts', text: """
 ${FRONTEND_HOST}
             """
-            sh 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
-            sh  'eval $(ssh-agent -s)'
-            sh "echo \"$SSH_PRIVATE_KEY\" | ssh-add - "
-            sh  'mkdir -p ~/.ssh'
-            sh '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-            sh  "ansible-playbook -i infrastructure/hosts -u $SSH_DEPLOY_USER infrastructure/ansistrano_deploy.yml -v"
+            withCredentials([sshUserPrivateKey(credentialsId: "SSH_PRIVATE_KEY", keyFileVariable: 'SSH_KEY')]) {
+               sh  "ansible-playbook --private-key=${SSH_KEY} -i infrastructure/hosts -u $SSH_DEPLOY_USER infrastructure/ansistrano_deploy.yml -v"
+            }
         }
     }
   }
