@@ -1,0 +1,25 @@
+pipeline {
+  agent any
+  options {
+    disableConcurrentBuilds()
+  }
+  stages {
+    stage('Build') {
+        agent {
+            dockerfile {image 'klakegg/hugo:0.74.3-alpine'}
+        }
+        steps {
+            sh 'hugo'
+        }
+    }
+    stage('Deploy') {
+        agent {
+            docker { image 'kissmy/ansistrano:latest'}
+        }
+        steps {
+            sh 'ls -l'
+        }
+    }
+  }
+}
+
