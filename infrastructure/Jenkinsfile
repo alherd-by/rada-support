@@ -20,7 +20,6 @@ pipeline {
     stage('Deploy') {
         environment {
             SSH_DEPLOY_USER = credentials('SSH_DEPLOY_USER')
-            SSH_PRIVATE_KEY  = credentials('SSH_PRIVATE_KEY')
             FRONTEND_HOST   = credentials('FRONTEND_HOST')
         }
         steps {
@@ -29,19 +28,15 @@ pipeline {
             writeFile file: 'infrastructure/hosts', text: """
 ${FRONTEND_HOST}
             """
-            withCredentials(
-                [sshUserPrivateKey(credentialsId: "SSH_PRIVATE_KEY", keyFileVariable: 'SSH_KEY')]
-            ) {
-               ansiblePlaybook(
-                   playbook: 'infrastructure/ansistrano_deploy.yml',
-                   inventory: 'infrastructure/hosts',
-                   credentialsId: "$SSH_KEY",
-                   hostKeyChecking: false,
-                   extraVars: [
-                       login: "$SSH_DEPLOY_USER",
-                   ]
-               )
-            }
+            ansiblePlaybook(
+               playbook: 'infrastructure/ansistrano_deploy.yml',
+               inventory: 'infrastructure/hosts',
+               credentialsId: "SSH_PRIVATE_KEY",
+               hostKeyChecking: false,
+               extraVars: [
+                   login: "$SSH_DEPLOY_USER",
+               ]
+           )
         }
     }
   }
