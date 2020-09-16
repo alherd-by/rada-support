@@ -13,23 +13,30 @@ pipeline {
         }
         steps {
             sh 'hugo'
+            stash includes: 'public/*', name: 'output'
+            stash includes: 'infrastructure/*', name: 'infra'
         }
     }
     stage('Deploy') {
-        agent {
-            docker { image 'kissmy/ansistrano:latest'}
-        }
         environment {
             SSH_DEPLOY_USER = credentials('SSH_DEPLOY_USER')
             SSH_PRIVATE_KEY  = credentials('SSH_PRIVATE_KEY')
             FRONTEND_HOST   = credentials('FRONTEND_HOST')
         }
         steps {
+            unstash 'infra'
+            unstash 'output'
             writeFile file: 'infrastructure/hosts', text: """
 ${FRONTEND_HOST}
             """
             withCredentials([sshUserPrivateKey(credentialsId: "SSH_PRIVATE_KEY", keyFileVariable: 'SSH_KEY')]) {
-               sh  "ansible-playbook --private-key=${SSH_KEY} -i infrastructure/hosts -u $SSH_DEPLOY_USER infrastructure/ansistrano_deploy.yml -v"
+               ansiblePlaybook(
+                   playbook: 'infrastructure/ansistrano_deploy.yml',
+                   inventory: 'infrastructure/hosts',
+                   credentialsId: 'SSH_KEY',
+                   hostKeyChecking: false,
+                   extras: '-e username=' + $SSH_DEPLOY_USER
+               )
             }
         }
     }
