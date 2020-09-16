@@ -41,7 +41,7 @@ ${FRONTEND_HOST}
                    credentialsId: 'SSH_KEY',
                    hostKeyChecking: false,
                    extraVars: [
-                       login: $DEPLOY_USER,
+                       login: "$DEPLOY_USER",
                    ]
                )
             }
