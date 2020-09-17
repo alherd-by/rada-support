@@ -40,5 +40,11 @@ ${FRONTEND_HOST}
         }
     }
   }
+  post {
+      always {
+          step([$class: "WsCleanup"])
+          cleanWs()
+      }
+  }
 }
 
