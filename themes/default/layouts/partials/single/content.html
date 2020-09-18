@@ -12,13 +12,13 @@
       <table>
         {{ range $.Site.Data.list }}
         <tr>
-          <td>
-            <img src="{{ .logo }}" height="150" width="150">
+          <td style="max-height: 100px">
+            <img src="{{ .logo }}" width="150">
           </td>
-          <td>
+          <td style="vertical-align: middle">
             {{ .name }}
           </td>
-          <td>
+          <td style="vertical-align: middle">
             <a href="{{.link}}" target="_blank">Ссылка на заявление</a>
           </td>
         </tr>
